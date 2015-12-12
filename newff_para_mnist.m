@@ -2,30 +2,26 @@
 images = loadMNISTImages('data/train-images.idx3-ubyte');
 labels = loadMNISTLabels('data/train-labels.idx1-ubyte');
 
-%% Cambiamos su formato (a horizontal y a binario)
+%% Cambiamos el formato
 
-input = images;
-T = reshape(labels,1, length(labels));
-T = dec2bin(T);
-
-%% Cada número binario ocupa varias filas hacia abajo
-
-for i=1:size(T,1)
-    for j=1:size(T,2)
-        aux(j,i) = str2num(T(i,j));
-    end
-end
-
-T = aux;
+targetValues = 0.*ones(10, size(labels, 1));
+for n = 1: size(labels, 1)
+    targetValues(labels(n) + 1, n) = 1;
+end;
 
 %% Realizamos el entrenamiento
 
-% newff para unared de neuronas feedforward, con capas de tamaño 20 y 4 y
-% funciones de transferencia tansig y logsig, respectívamente
-net=newff(minmax(input),[20,4],{'tansig','logsig'});
+% newff  con capas de tamaño 200 y 10 
+% funciones de transferencia tansig y logsig
+net=newff(minmax(images),[200,10],{'tansig','logsig'});
 
 %net será la red entrenada y tr el error en función de la iteración
-[net,tr]=train(net,input,T, 'useGPU','yes');
+net.trainParam.epochs = 200; %programo la red para 200 iteraciones (epochs)
+%net.trainParam.showWindow=False; %para ocultar la interfaz gráfica
+%net.trainParam.time=600; %tiempo de entreo en segundos
+[net,tr]=train(net,images,targetValues, 'useGPU','yes');
+
+fprintf('Entrenamiento de la red finalizado \n ');
 
 %% Cargamos los datos de Test
 
@@ -34,28 +30,17 @@ labels_test = loadMNISTLabels('data/t10k-labels.idx1-ubyte');
 
 y = net(images_test);
 
-%% Redondeamos y cambiamos formato
-y = round(y);
-y = reshape(y, length(y), 1);
 
-%%
+%% Comprobamos los resultados
 
-T2 = reshape(labels_test,1, length(labels_test));
-T2 = dec2bin(T2);
-
-for i=1:size(T2,1)
-    for j=1:size(T2,2)
-        aux2(j,i) = str2num(T2(i,j));
+correct = 0;
+for t=1:size(labels_test, 1)
+    if(find(y(:,t)==max(y(:,t)))==(labels_test(t)+1))
+        correct=correct+1;
     end
 end
 
-%% Resultados
+res = correct/size(labels_test, 1);
 
-res = eq(aux2, y);
-result_perc = sum(res(:))/(size(aux2,1)*size(aux2,2));
-error0 = result_perc*100;
-display(error0)
 
-%% Calculamos el error cuadratico medio y con ello evaluamos la precision de la red de neuronas.
-
-error = mse(aux2 - y)
+fprintf('Porcentaje de exactitud : %.3f %% \n ', res*100);

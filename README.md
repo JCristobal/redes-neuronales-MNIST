@@ -9,7 +9,7 @@ El objetivo  es resolver un problema de reconocimiento de patrones utilizando re
 
 La funcionalidad principal la puedes encontrar en el documento **newff_para_mnist.m**, mientras que *loadMNISTImages.m* y *loadMNISTLabes.m* cargan las imágenes y sus respectivas etiquetas del directorio data/
 
-Implementado en MatLab con la bibliotecas de *Neural Network Toolbox*
+Implementado en MatLab y su *Neural Network Toolbox*.
 
 ![entrenamiento de 200 iteraciones, 96.45%exito entreno y resultado final 97.750%exito](http://i.imgur.com/2CJgYTS.png)
 

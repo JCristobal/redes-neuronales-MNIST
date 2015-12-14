@@ -44,3 +44,33 @@ res = correct/size(labels_test, 1);
 
 
 fprintf('Porcentaje de exactitud : %.3f %% \n ', res*100);
+
+%% Mostramos los resultados del conjunto de prueba
+fprintf('Mostramos los resultados del conjunto de prueba: \n ');
+for t=1:size(y, 2)
+    valor = find(y(:,t)==max(y(:,t)));
+    if(valor == 1)
+        fprintf('0');
+    else
+        fprintf('%.d%', valor-1);
+    end
+end
+fprintf('\n');
+
+%% Generamos un archivo con los resultados del conjunto de prueba
+
+fileID = fopen('resultados.txt','w');
+
+for t=1:size(y, 2)
+    valor = find(y(:,t)==max(y(:,t)));
+    if(valor == 1)
+        fprintf(fileID,'0');
+    else
+        fprintf(fileID,'%.d%', valor-1);
+    end
+end
+
+fclose(fileID);
+
+fprintf('\nResultados del conjunto de prueba escritos en el documento resultados.txt\n');
+

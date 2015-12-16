@@ -1,6 +1,6 @@
 % Cargamos las imágenes y sus etiquetas
-images = loadMNISTImages('data/train-images.idx3-ubyte');
-labels = loadMNISTLabels('data/train-labels.idx1-ubyte');
+images = loadMNISTImages('../data/train-images.idx3-ubyte');
+labels = loadMNISTLabels('../data/train-labels.idx1-ubyte');
 
 %% Cambiamos el formato
 
@@ -11,9 +11,10 @@ end;
 
 %% Realizamos el entrenamiento
 
-% newff  con capas de tamaño 200 y 10 
-% funciones de transferencia tansig y logsig
-net=newff(minmax(images),[200,10],{'tansig','logsig'});
+% Red feed-forward backpropagation (newff) con capas de tamaño 300, 55 y 10 
+% funciones de transferencia tansig y logsig y softmax
+% Ajustamos el tamaño (aproximádamente) siguiendo la Regla de la Pirámide Geométrica
+net=newff(minmax(images),[300,55,10],{'tansig','logsig','softmax'});
 
 %net será la red entrenada y tr el error en función de la iteración
 net.trainParam.epochs = 200; %programo la red para 200 iteraciones (epochs)
@@ -25,8 +26,8 @@ fprintf('Entrenamiento de la red finalizado \n ');
 
 %% Cargamos los datos de Test
 
-images_test = loadMNISTImages('data/t10k-images.idx3-ubyte');
-labels_test = loadMNISTLabels('data/t10k-labels.idx1-ubyte');
+images_test = loadMNISTImages('../data/t10k-images.idx3-ubyte');
+labels_test = loadMNISTLabels('../data/t10k-labels.idx1-ubyte');
 
 y = net(images_test);
 
